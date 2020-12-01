@@ -1,0 +1,9 @@
+  
+{
+    "type": "sqlite",
+    "database" : "./jokesdb.sql",
+    "logging": true,
+    "synchronize": false,
+    "migrations": ["dist/migrations/*.js"],
+    "entities": ["dist/entities/*.js"]
+}
