@@ -27,9 +27,12 @@ const main = async () => {
   app.get(
     "/categories/:categoryId/jokes/random",
     async (req: Request, res: Response) => {
-      const category = await Categories.findOne({
-        id: parseInt(req.params!.categoryId),
-      });
+      const qb = getConnection()
+        .getRepository(Categories)
+        .createQueryBuilder("c")
+        .where("c.id = :id", { id: parseInt(req.params.categoryId) })
+        .innerJoinAndSelect("c.jokes", "jokes", 'jokes."categoryId" = c.id');
+      const category = await qb.getOne();
       if (!category) {
         return res.status(404).send({ error: "category is not existed" });
       }
@@ -48,9 +51,12 @@ const main = async () => {
   app.get(
     "/categories/:categoryId/jokes",
     async (req: Request, res: Response) => {
-      const category = await Categories.findOne({
-        id: parseInt(req.params!.categoryId),
-      });
+      const qb = getConnection()
+        .getRepository(Categories)
+        .createQueryBuilder("c")
+        .where("c.id = :id", { id: parseInt(req.params.id) })
+        .innerJoinAndSelect("c.jokes", "jokes", 'jokes."categoryId" = c.id');
+      const category = await qb.getOne();
       if (!category) {
         return res.status(404).send({ error: "category is not existed" });
       }
